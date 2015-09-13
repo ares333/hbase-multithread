@@ -5,6 +5,11 @@ pom.xml.versionsBackup
 pom.xml.next
 release.properties
 
+/.settings/*
+/.buildpath
+/.classpath
+/.project
+
 # =========================
 # Operating System Files
 # =========================
