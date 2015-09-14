@@ -13,8 +13,8 @@ import org.apache.hadoop.hbase.util.Bytes;
 
 /**
  * hbase 多线程Delete。
- * 
- * @author xiepeng@joyport.com/aresrr@126.com
+ *
+ * @author Ares admin@phpdr.net
  * @warning 数据源线程的个数在外部确定。
  */
 public class HDelete extends HBaseMulti {
@@ -29,10 +29,12 @@ public class HDelete extends HBaseMulti {
 
 	/**
 	 * 添加一个Callable实例，如果call()返回null表示没有更多数据
+	 *
 	 * @param task
 	 */
 	public void addTask(final Callable<HashMap<String, String>> task) {
 		class AddTaskThread extends Thread {
+			@Override
 			public void run() {
 				try {
 					HashMap<String, String> row = null;
@@ -59,11 +61,13 @@ public class HDelete extends HBaseMulti {
 		this.enableStatus = enable;
 	}
 
+	@Override
 	protected int getTaskPoolSize() {
 		return this.taskPool.size();
 	}
 
 	// put线程始终保持一个threadNum的并发
+	@Override
 	protected synchronized void threadStart() throws IOException {
 		if (!taskPool.isEmpty()) {
 			HBaseThread thread = new HThread();
@@ -79,6 +83,7 @@ public class HDelete extends HBaseMulti {
 	}
 
 	class HThread extends HBaseThread {
+		@Override
 		public void process() throws Exception {
 			HTable table = (HTable) HBaseMulti.getHTablePool().getTable(
 					HDelete.this.table);

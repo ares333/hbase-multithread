@@ -17,8 +17,8 @@ import org.apache.hadoop.hbase.util.Bytes;
 
 /**
  * hbase 多线程Get。
- * 
- * @author xiepeng@joyport.com/aresrr@126.com
+ *
+ * @author Ares admin@phpdr.net
  * @warning 任务池已经排重，但是已经执行或执行中的任务无法排重。
  */
 public class HGet extends HBaseMulti {
@@ -45,11 +45,13 @@ public class HGet extends HBaseMulti {
 		}
 	}
 
+	@Override
 	protected int getTaskPoolSize() {
 		return this.taskPool.size();
 	}
 
 	// 开启一个新的线程
+	@Override
 	protected synchronized void threadStart() throws IOException {
 		if (!taskPool.isEmpty()) {
 			int num = taskPool.size();
@@ -85,6 +87,7 @@ public class HGet extends HBaseMulti {
 			this.keys = keys;
 		}
 
+		@Override
 		public void process() throws Exception {
 			HTable table = (HTable) HBaseMulti.getHTablePool().getTable(
 					HGet.this.table);
@@ -131,7 +134,7 @@ public class HGet extends HBaseMulti {
 							Bytes.toString(col.getValue()));
 				}
 				row.put("__rowkey", Bytes.toString(result.getRow()));
-				if(null!=row.get("__rowkey"))
+				if (null != row.get("__rowkey"))
 					HGet.this.buffer.push(row);
 				synchronized (HGet.this.counter) {
 					HGet.this.counter++;

@@ -14,8 +14,8 @@ import org.apache.hadoop.hbase.util.Bytes;
 /**
  * hbase 多线程Put。 HBase有一个高效的批量加载（bulk loading）工具，比HBase API写入速度至少快一个数量级
  * http://hbase.apache.org/docs/current/bulk-loads.html
- * 
- * @author xiepeng@joyport.com/aresrr@126.com
+ *
+ * @author Ares admin@phpdr.net
  * @warning 数据源线程的个数在外部确定。
  */
 public class HPut extends HBaseMulti {
@@ -30,11 +30,12 @@ public class HPut extends HBaseMulti {
 
 	/**
 	 * 添加一个Callable的实例，如果call()返回null表示没有更多数据
-	 * 
+	 *
 	 * @param task
 	 */
 	public void addTask(final Callable<HashMap<String, String>> task) {
 		class AddTaskThread extends Thread {
+			@Override
 			public void run() {
 				try {
 					HashMap<String, String> row = null;
@@ -57,6 +58,7 @@ public class HPut extends HBaseMulti {
 		thread.start();
 	}
 
+	@Override
 	public HashMap<String, String> fetch() throws InterruptedException {
 		return null;
 	}
@@ -65,6 +67,7 @@ public class HPut extends HBaseMulti {
 		this.enableStatus = enable;
 	}
 
+	@Override
 	protected int getTaskPoolSize() {
 		return this.taskPool.size();
 	}
@@ -72,6 +75,7 @@ public class HPut extends HBaseMulti {
 	/**
 	 * put线程始终保持一个threadNum的并发
 	 */
+	@Override
 	protected synchronized void threadStart() throws IOException {
 		if (!taskPool.isEmpty()) {
 			HBaseThread thread = new HThread();
@@ -90,7 +94,7 @@ public class HPut extends HBaseMulti {
 
 	/**
 	 * 阻塞，直到任务结束
-	 * 
+	 *
 	 * @throws InterruptedException
 	 */
 	public synchronized void block() throws InterruptedException {
@@ -98,6 +102,7 @@ public class HPut extends HBaseMulti {
 	}
 
 	class HThread extends HBaseThread {
+		@Override
 		public void process() throws Exception {
 			HTable table = (HTable) HBaseMulti.getHTablePool().getTable(
 					HPut.this.table);

@@ -15,8 +15,8 @@ import org.apache.hadoop.hbase.util.Bytes;
 
 /**
  * hbase 多线程扫描。
- * 
- * @author xiepeng@joyport.com/aresrr@126.com
+ *
+ * @author Ares admin@phpdr.net
  * @warning taskPool并没有做区间排重，所以避免重复扫描需要在外部保证。
  */
 public class HScan extends HBaseMulti {
@@ -37,7 +37,7 @@ public class HScan extends HBaseMulti {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param start
 	 *            string 开始rowkey，inclusive
 	 * @param end
@@ -82,7 +82,7 @@ public class HScan extends HBaseMulti {
 
 	/**
 	 * 判断一个字符串是否是数字组成
-	 * 
+	 *
 	 * @param str
 	 *            string
 	 * @return boolean
@@ -99,6 +99,7 @@ public class HScan extends HBaseMulti {
 		return true;
 	}
 
+	@Override
 	protected int getTaskPoolSize() {
 		return this.taskPool.size();
 	}
@@ -106,6 +107,7 @@ public class HScan extends HBaseMulti {
 	/**
 	 * 开启一个新的线程
 	 */
+	@Override
 	protected synchronized void threadStart() throws Exception {
 		if (!taskPool.isEmpty()) {
 			String[] task = taskPool.remove(0);
@@ -133,6 +135,7 @@ public class HScan extends HBaseMulti {
 			this.endKey = endKey;
 		}
 
+		@Override
 		public void process() throws Exception {
 			HTable table = (HTable) HBaseMulti.getHTablePool().getTable(
 					HScan.this.table);

@@ -4,8 +4,8 @@ import java.util.HashMap;
 
 /**
  * HBase多线程类用到的缓冲区
- * 
- * @author Ares ares@phpdr.net
+ *
+ * @author Ares admin@phpdr.net
  */
 public class HBuffer {
 	// 指向最后一个数据
@@ -26,7 +26,7 @@ public class HBuffer {
 
 	/**
 	 * 如果缓冲区已经terminate会重新启用
-	 * 
+	 *
 	 * @param item
 	 * @throws Exception
 	 */
@@ -45,7 +45,7 @@ public class HBuffer {
 
 	/**
 	 * 如果缓冲区为空并且已经terminate则总是返回null
-	 * 
+	 *
 	 * @return
 	 * @throws InterruptedException
 	 */
